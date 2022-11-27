@@ -1,7 +1,9 @@
 import * as React from 'react';
 
-import '../styles/app.pcss';
-
+import { WalletSelectorContextProvider } from './WalletSelectorContext';
+import Content from './Content';
 export const App = () => (
-  <div className="h-screen flex items-center justify-center"></div>
+  <WalletSelectorContextProvider>
+    <Content />
+  </WalletSelectorContextProvider>
 );
