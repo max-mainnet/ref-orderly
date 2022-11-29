@@ -4,6 +4,7 @@ import type { WalletSelector, AccountState } from '@near-wallet-selector/core';
 import { setupModal } from '@near-wallet-selector/modal-ui';
 import type { WalletSelectorModal } from '@near-wallet-selector/modal-ui';
 import { setupNearWallet } from '@near-wallet-selector/near-wallet';
+import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
 
 import * as React from 'react';
 
@@ -38,7 +39,7 @@ export const WalletSelectorContextProvider: React.FC<any> = ({ children }) => {
     const _selector = await setupWalletSelector({
       network: 'testnet',
       debug: true,
-      modules: [setupNearWallet()],
+      modules: [setupNearWallet(), setupMyNearWallet()],
     });
 
     const _modal = setupModal(_selector, { contractId: CONTRACT_ID });

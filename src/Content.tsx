@@ -4,13 +4,23 @@ import { providers } from 'near-api-js';
 import { AccountView, AccessKeyView } from 'near-api-js/lib/providers/provider';
 import getConfig from './config';
 import { useEffect } from 'react';
-import { near } from './near';
-import { find_orderly_functionCall_key } from './orderly/utils';
+import { near, keyStore } from './near';
+import { STORAGE_TO_REGISTER_WITH_MFT } from './orderly/utils';
 import {
   add_functionCall_key,
+  get_listed_tokens,
+  get_user_trading_key,
+  storage_balance_bounds,
+  storage_balance_of,
   user_account_exists,
 } from './orderly/on-chain-api';
 import './app.pcss';
+import {
+  formatNearAmount,
+  parseNearAmount,
+} from 'near-api-js/lib/utils/format';
+import { announceKey, registerOrderly } from './orderly/api';
+import { find_orderly_functionCall_key } from './orderly/utils';
 export type Account = AccountView & {
   account_id: string;
 };
@@ -22,7 +32,32 @@ export default function Content() {
     if (!accountId) return null;
     const nearConnection = await near.account(accountId);
 
-    return find_orderly_functionCall_key();
+    const key = await find_orderly_functionCall_key(accountId);
+
+    console.log({
+      allkeys: await nearConnection.getAccessKeys(),
+    });
+
+    console.log({ key });
+
+    get_user_trading_key(accountId).then((res) => {
+      console.log({ res });
+    });
+
+    // get_user_trading_key(accountId).then((res) => {
+    //   console.log({
+    //     trading_ley: res,
+    //   });
+
+    // });
+
+    const keyPub = await keyStore.getKey('testnet', accountId);
+
+    console.log({ keyPub: keyPub.getPublicKey().toString() });
+
+    return storage_balance_of(accountId);
+
+    // return find_orderly_functionCall_key(accountId);
 
     // const provider = new providers.JsonRpcProvider({
     //   url: getConfig().nodeUrl,
@@ -38,19 +73,15 @@ export default function Content() {
     // });
   }, []);
 
-  const testFunc = useCallback(async () => {
-    if (!accountId) return null;
-
-    return user_account_exists(accountId);
-  }, []);
-
   useEffect(() => {
     getAccessKey().then((res) => {
       console.log(res);
     });
 
-    testFunc().then((res) => {
-      console.log(res);
+    get_listed_tokens().then((res) => {
+      console.log({
+        token_list: res,
+      });
     });
   }, [accountId]);
 
@@ -59,8 +90,8 @@ export default function Content() {
     return wallet.signOut();
   };
 
-  const handleAddKey = async () => {
-    return add_functionCall_key();
+  const handlerRegister = async () => {
+    return await registerOrderly(accountId);
   };
 
   return (
@@ -75,12 +106,22 @@ export default function Content() {
       </button>
 
       <button
-        onClick={() => {
-          return handleAddKey();
+        onClick={async () => {
+          await announceKey(accountId);
         }}
+        className="text-center"
+      >
+        {'announce key'}
+      </button>
+
+      <button
+        onClick={async () => {
+          return await handlerRegister();
+        }}
+        type="button"
         className="ml-2"
       >
-        add orderly key
+        register orderly
       </button>
     </div>
   );

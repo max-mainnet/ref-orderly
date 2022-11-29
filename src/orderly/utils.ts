@@ -31,11 +31,7 @@ export const getNormalizeTradingKey = () => {
 // await contract.user_request_set_trading_key({ key: normalizeTradingKey });
 
 // find orderly functioncall key
-export const find_orderly_functionCall_key = async () => {
-  const accountId = window.selector?.store?.getState()?.accounts[0]?.accountId;
-
-  if (!accountId) throw new Error('Please sign in first.');
-
+export const find_orderly_functionCall_key = async (accountId: string) => {
   const nearConnection = await near.account(accountId);
 
   const allKeys = await nearConnection.getAccessKeys();

@@ -162,7 +162,7 @@
     react "18.2.0"
     react-dom "18.2.0"
 
-"@near-wallet-selector/my-near-wallet@7.2.1":
+"@near-wallet-selector/my-near-wallet@7.2.1", "@near-wallet-selector/my-near-wallet@^7.0.0":
   version "7.2.1"
   resolved "https://registry.npmmirror.com/@near-wallet-selector/my-near-wallet/-/my-near-wallet-7.2.1.tgz#5a0d4d748be2f54cef83201db216b0aed9fec3f4"
   integrity sha512-EgKdHhkkjNP4mz7L+sAS9UI8fUVVVolynXYJPHbjXIp+6ZECToGIMSb8ZSYiIFQjIhiG3aGz6Ruz1Z35g9CsPg==

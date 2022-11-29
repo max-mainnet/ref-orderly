@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Ref Finance <> Orderly ",
   "scripts": {
-    "start": "parcel serve src/index.html -p 8080 --open",
+    "start": "parcel serve src/index.html -p 8000 --open",
     "build": "parcel build --dist-dir dist src/index.html",
     "clean": "rm -rf .parcel-cache dist"
   },
@@ -26,6 +26,7 @@
     "@near-wallet-selector/core": "^7.0.0",
     "@near-wallet-selector/modal-ui": "^7.0.0",
     "@near-wallet-selector/near-wallet": "^7.0.0",
+    "@near-wallet-selector/my-near-wallet": "^7.0.0",
     "@types/bn.js": "^5.1.1",
     "elliptic": "^6.5.4",
     "keccak256": "^1.0.6",

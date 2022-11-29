@@ -6,7 +6,11 @@ import {
   WalletConnection,
   providers,
 } from 'near-api-js';
-import { Transaction as WSTransaction } from '@near-wallet-selector/core';
+import {
+  Transaction as WSTransaction,
+  AddKeyAction,
+  AddKeyPermission,
+} from '@near-wallet-selector/core';
 export interface ViewFunctionOptions {
   methodName: string;
   args?: object;
@@ -16,6 +20,9 @@ import BN from 'bn.js';
 
 export const getGas = (gas: string) =>
   gas ? new BN(gas) : new BN('100000000000000');
+
+export const getAmount = (amount: string) =>
+  amount ? new BN(utils.format.parseNearAmount(amount)) : new BN('0');
 
 export interface FunctionCallOptions extends ViewFunctionOptions {
   gas?: string;
@@ -54,10 +61,10 @@ export const executeMultipleTransactions = async (
 ) => {
   const wallet = await window.selector.wallet();
 
-  const wstransactions: WSTransaction[] = [];
+  const wsTransactions: WSTransaction[] = [];
 
   transactions.forEach((transaction) => {
-    wstransactions.push({
+    wsTransactions.push({
       signerId: wallet.getAccounts()?.[0]!,
       receiverId: transaction.receiverId,
       actions: transaction.functionCalls.map((fc) => {
@@ -76,7 +83,7 @@ export const executeMultipleTransactions = async (
 
   return wallet
     .signAndSendTransactions({
-      transactions: wstransactions,
+      transactions: wsTransactions,
       callbackUrl,
     })
     .then((res) => {
@@ -85,4 +92,67 @@ export const executeMultipleTransactions = async (
     .catch(() => {
       alert('fail');
     });
+};
+
+export const getFunctionCallTransaction = async (
+  transactions: Transaction[]
+) => {
+  const signerId = await window.selector?.store?.getState()?.accounts[0]
+    ?.accountId;
+
+  const wsTransactions: WSTransaction[] = [];
+
+  transactions.forEach((transaction) => {
+    wsTransactions.push({
+      signerId: signerId!,
+      receiverId: transaction.receiverId,
+      actions: transaction.functionCalls.map((fc) => {
+        return {
+          type: 'FunctionCall',
+          params: {
+            methodName: fc.methodName,
+            args: fc.args || [],
+            gas: getGas(fc.gas).toNumber().toFixed(),
+            deposit: utils.format.parseNearAmount(fc.amount || '0')!,
+          },
+        };
+      }),
+    });
+  });
+
+  return wsTransactions;
+};
+
+export const getAddFunctionCallKeyTransaction = async ({
+  receiverId,
+  publicKey,
+}: {
+  receiverId: string;
+  publicKey: string;
+}) => {
+  const signerId = await window.selector?.store?.getState()?.accounts[0]
+    ?.accountId;
+
+  if (!signerId) throw Error('Please sign in first.');
+
+  const wsTransactions: WSTransaction[] = [];
+  wsTransactions.push({
+    signerId: signerId!,
+    receiverId: signerId,
+    actions: [
+      {
+        type: 'AddKey',
+        params: {
+          publicKey,
+          accessKey: {
+            permission: {
+              receiverId,
+            },
+          },
+        },
+      },
+    ],
+  });
+
+  return wsTransactions;
 };
