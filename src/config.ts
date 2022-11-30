@@ -641,3 +641,30 @@ export function getTransakConfig(
       };
   }
 }
+
+export function getOrderlyConfig(env: string = process.env.NEAR_ENV) {
+  switch (env) {
+    case 'production':
+    case 'mainnet':
+      return {
+        ORDERLY_ASSET_MANAGER: 'asset-manager.orderly-network.near',
+        OFF_CHAIN_END_POINT: 'https://api.orderly.org',
+      };
+    case 'development':
+    case 'pub-testnet':
+      return {
+        ORDERLY_ASSET_MANAGER: 'asset-manager.orderly.testnet',
+        OFF_CHAIN_END_POINT: 'https://testnet-api.orderly.org',
+      };
+    case 'testnet':
+      return {
+        ORDERLY_ASSET_MANAGER: 'asset-manager.orderly.testnet',
+        OFF_CHAIN_END_POINT: 'https://testnet-api.orderly.org',
+      };
+    default:
+      return {
+        ORDERLY_ASSET_MANAGER: 'asset-manager.orderly-network.near',
+        OFF_CHAIN_END_POINT: 'https://api.orderly.org',
+      };
+  }
+}

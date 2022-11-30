@@ -5,9 +5,11 @@ import { AccountView, AccessKeyView } from 'near-api-js/lib/providers/provider';
 import getConfig from './config';
 import { useEffect } from 'react';
 import { near, keyStore } from './near';
-import { STORAGE_TO_REGISTER_WITH_MFT } from './orderly/utils';
 import {
-  add_functionCall_key,
+  STORAGE_TO_REGISTER_WITH_MFT,
+  getOrderlySignature,
+} from './orderly/utils';
+import {
   get_listed_tokens,
   get_user_trading_key,
   storage_balance_bounds,
@@ -39,6 +41,12 @@ export default function Content() {
     });
 
     console.log({ key });
+
+    getOrderlySignature(accountId).then((res) => {
+      console.log({
+        signa: res,
+      });
+    });
 
     get_user_trading_key(accountId).then((res) => {
       console.log({ res });
