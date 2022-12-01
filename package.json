@@ -4,8 +4,14 @@
   "license": "MIT",
   "description": "Ref Finance <> Orderly ",
   "scripts": {
-    "start": "parcel serve src/index.html -p 8000 --open",
-    "build": "parcel build --dist-dir dist src/index.html",
+    "build": "parcel build src/index.html",
+    "build:testnet": "NEAR_ENV=testnet parcel build src/index.html",
+    "build:pub-testnet": "NEAR_ENV=pub-testnet parcel build src/index.html",
+    "build:mainnet": "NEAR_ENV=mainnet parcel build src/index.html",
+    "start": "parcel src/index.html",
+    "start:mainnet": "NEAR_ENV=mainnet parcel src/index.html",
+    "start:testnet": "NEAR_ENV=testnet parcel src/index.html",
+    "start:pub-testnet": "NEAR_ENV=pub-testnet parcel src/index.html",
     "clean": "rm -rf .parcel-cache dist"
   },
   "devDependencies": {
