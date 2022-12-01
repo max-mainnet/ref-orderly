@@ -59,22 +59,22 @@ const announceKey = async (accountId: string) => {
 const deposit = async (accountId: string) => {
   const storage_amount = await get_storage_deposit_amount(accountId);
 
-  if (storage_amount !== null) {
-    const deposit_functionCall = orderly_storage_deposit(
-      accountId,
-      REGISTER_DEPOSIT_AMOUNT,
-      false
-    );
+  // if (storage_amount !== null) {
+  const deposit_functionCall = orderly_storage_deposit(
+    accountId,
+    REGISTER_DEPOSIT_AMOUNT,
+    false
+  );
 
-    const transaction: Transaction = {
-      receiverId: ORDERLY_ASSET_MANAGER,
-      functionCalls: [deposit_functionCall],
-    };
+  const transaction: Transaction = {
+    receiverId: ORDERLY_ASSET_MANAGER,
+    functionCalls: [deposit_functionCall],
+  };
 
-    return signAndSendTransactions(
-      await getFunctionCallTransaction([transaction])
-    );
-  }
+  return signAndSendTransactions(
+    await getFunctionCallTransaction([transaction])
+  );
+  // }
 };
 
 const registerOrderly = async (accountId: string) => {
@@ -117,6 +117,4 @@ const registerOrderly = async (accountId: string) => {
   // return signAndSendTransactions(wsTransactions);
 };
 
-const getTradingKey = async (accountId: string) => {};
-
-export { signAndSendTransactions, registerOrderly, announceKey };
+export { signAndSendTransactions, registerOrderly, announceKey, deposit };

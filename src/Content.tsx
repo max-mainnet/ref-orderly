@@ -21,8 +21,8 @@ import {
   formatNearAmount,
   parseNearAmount,
 } from 'near-api-js/lib/utils/format';
-import { announceKey, registerOrderly } from './orderly/api';
-import { find_orderly_functionCall_key } from './orderly/utils';
+import { announceKey, deposit, registerOrderly } from './orderly/api';
+import { find_orderly_functionCall_key, getPublicKey } from './orderly/utils';
 import { queryOrderly } from './orderly/off-chain-api';
 export type Account = AccountView & {
   account_id: string;
@@ -35,23 +35,15 @@ export default function Content() {
     if (!accountId) return null;
     const nearConnection = await near.account(accountId);
 
-    get_user_trading_key(accountId).then((res) => {
-      console.log({ res });
-    });
-
-    // get_user_trading_key(accountId).then((res) => {
-    //   console.log({
-    //     trading_ley: res,
-    //   });
-
-    // });
-
     queryOrderly({
       url: '/v1/client/info',
       accountId,
     });
 
-    return storage_balance_of(accountId);
+    queryOrderly({
+      url: '/v1/client/holding?all=false',
+      accountId,
+    });
 
     // return find_orderly_functionCall_key(accountId);
 
@@ -70,9 +62,7 @@ export default function Content() {
   }, []);
 
   useEffect(() => {
-    test().then((res) => {
-      console.log(res);
-    });
+    test();
   }, [accountId]);
 
   const handleSignOut = async () => {
@@ -97,15 +87,6 @@ export default function Content() {
 
       <button
         onClick={async () => {
-          await announceKey(accountId);
-        }}
-        className="text-center"
-      >
-        {'announce key'}
-      </button>
-
-      <button
-        onClick={async () => {
           return await handlerRegister();
         }}
         type="button"
@@ -123,6 +104,27 @@ export default function Content() {
         className="ml-2"
       >
         show trading key
+      </button>
+
+      <button
+        onClick={async () => {
+          const tradingKey = await getPublicKey(accountId);
+          alert(tradingKey);
+        }}
+        type="button"
+        className="ml-2"
+      >
+        show public key
+      </button>
+
+      <button
+        onClick={async () => {
+          await deposit(accountId);
+        }}
+        type="button"
+        className="ml-2"
+      >
+        deposit 0.05N
       </button>
     </div>
   );

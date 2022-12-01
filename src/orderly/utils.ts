@@ -106,17 +106,7 @@ export const getOrderlySignature = async ({
 }) => {
   const message = generateMessage(time_stamp, method, url, body);
 
-  // const keyPair = await keyStore.getKey(getConfig().networkId, accountId);
-
-  const keyPair = KeyPair.fromString(
-    'ed25519:VNX6EELQhP4G4Zg8HtTNKjBJoCmMKFQ8es7D33NwauX49eoBiL1GUjBARcMGKPtdjFhWNF36SoCUTzJRWKn789B'
-  );
-
-  const publicKey = await getPublicKey(accountId);
-
-  console.log(publicKey);
-
-  const privateKey = getLocalPrivateKey(accountId);
+  const keyPair = await keyStore.getKey(getConfig().networkId, accountId);
 
   // const publicKeyBytes = bs58.decode(publicKey.replace('ed25519:', ''));
 
@@ -128,6 +118,6 @@ export const getOrderlySignature = async ({
 
   return new Buffer(signature)
     .toString('base64')
-    .replace('+', '-')
-    .replace('/', '_');
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
 };
