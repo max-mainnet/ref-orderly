@@ -21,6 +21,7 @@ import {
 } from './utils';
 import getConfig from '../config';
 import { BN } from 'bn.js';
+import { ONE_YOCTO_NEAR } from '../near';
 import {
   formatNearAmount,
   parseNearAmount,
@@ -166,13 +167,14 @@ const user_deposit_native_token = async (amount: string) => {
 
 const deposit_exact_token = async (amount: string) => {
   return {
-    methodName: 'ft_transfer_call ',
+    methodName: 'ft_transfer_call',
     args: {
       receiver_id: ORDERLY_ASSET_MANAGER,
-      amount,
       msg: '',
+      amount,
     },
-    gas: '30000000000000',
+    gas: '300000000000000',
+    amount: ONE_YOCTO_NEAR,
   };
 };
 

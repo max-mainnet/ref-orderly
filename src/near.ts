@@ -24,6 +24,7 @@ export const getGas = (gas: string) =>
 export const getAmount = (amount: string) =>
   amount ? new BN(utils.format.parseNearAmount(amount)) : new BN('0');
 
+export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 export interface FunctionCallOptions extends ViewFunctionOptions {
   gas?: string;
   amount?: string;

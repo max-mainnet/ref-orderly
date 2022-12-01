@@ -161,4 +161,5 @@ export {
   storageDeposit,
   depositNEAR,
   depositFT,
+  signAndSendTransaction,
 };
