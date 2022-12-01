@@ -1,8 +1,8 @@
 import { getOrderlyConfig } from '../config';
-import { getPublicKey, getOrderlySignature } from './utils';
+import { getPublicKey, generateOrderlySignatureHeader } from './utils';
 
 // get
-export const queryOrderly = async ({
+export const requestOrderly = async ({
   url,
   accountId,
 }: {
@@ -16,7 +16,7 @@ export const queryOrderly = async ({
     'orderly-timestamp': `${time_stamp}`,
     'orderly-account-id': accountId,
     'orderly-key': await getPublicKey(accountId),
-    'orderly-signature': await getOrderlySignature({
+    'orderly-signature': await generateOrderlySignatureHeader({
       accountId,
       time_stamp,
       url: url || '',
@@ -25,12 +25,20 @@ export const queryOrderly = async ({
     }),
   };
 
-  console.log({
-    headers,
-  });
-
   return await fetch(`${getOrderlyConfig().OFF_CHAIN_END_POINT}${url || ''}`, {
     method: 'GET',
     headers,
+  }).then((res) => {
+    return res.json();
+  });
+};
+
+export const createOrder = async () => {};
+
+export const getOrderlyPublic = async (url?: string) => {
+  return await fetch(`${getOrderlyConfig().OFF_CHAIN_END_POINT}${url || ''}`, {
+    method: 'GET',
+  }).then((res) => {
+    return res.json();
   });
 };

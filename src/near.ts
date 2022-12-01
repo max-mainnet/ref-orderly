@@ -156,3 +156,9 @@ export const getAddFunctionCallKeyTransaction = async ({
 
   return wsTransactions;
 };
+
+export const getFTmetadata = async (token: string) => {
+  const account = await near.account(ORDERLY_ASSET_MANAGER);
+
+  return await account.viewFunction(token, 'ft_metadata');
+};

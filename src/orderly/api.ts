@@ -4,9 +4,15 @@ import {
   user_account_exists,
   user_announce_key,
   user_request_set_trading_key,
+  user_deposit_native_token,
+  deposit_exact_token,
 } from './on-chain-api';
 import { Transaction as WSTransaction } from '@near-wallet-selector/core';
-import { find_orderly_functionCall_key, getNormalizeTradingKey } from './utils';
+import {
+  find_orderly_functionCall_key,
+  getNormalizeTradingKey,
+  toNonDivisibleNumber,
+} from './utils';
 import {
   getAddFunctionCallKeyTransaction,
   ORDERLY_ASSET_MANAGER,
@@ -22,12 +28,15 @@ import {
 
 import { functionCall } from 'near-api-js/lib/transaction';
 import { REGISTER_DEPOSIT_AMOUNT } from './on-chain-api';
+import { getFTmetadata } from '../near';
 import {
   formatNearAmount,
   parseNearAmount,
 } from 'near-api-js/lib/utils/format';
 
-const signAndSendTransactions = async (wsTransactions: WSTransaction[]) => {
+const signAndSendTransactions = async (transactions: Transaction[]) => {
+  const wsTransactions = await getFunctionCallTransaction(transactions);
+
   const wallet = await window.selector.wallet();
 
   await wallet
@@ -56,7 +65,7 @@ const announceKey = async (accountId: string) => {
   await account.functionCall(ORDERLY_ASSET_MANAGER, 'user_announce_key', {});
 };
 
-const deposit = async (accountId: string) => {
+const storageDeposit = async (accountId: string) => {
   const storage_amount = await get_storage_deposit_amount(accountId);
 
   // if (storage_amount !== null) {
@@ -71,9 +80,7 @@ const deposit = async (accountId: string) => {
     functionCalls: [deposit_functionCall],
   };
 
-  return signAndSendTransactions(
-    await getFunctionCallTransaction([transaction])
-  );
+  return signAndSendTransactions([transaction]);
   // }
 };
 
@@ -117,4 +124,41 @@ const registerOrderly = async (accountId: string) => {
   // return signAndSendTransactions(wsTransactions);
 };
 
-export { signAndSendTransactions, registerOrderly, announceKey, deposit };
+const depositNEAR = async (amount: string) => {
+  const transactions: Transaction[] = [];
+
+  transactions.push({
+    receiverId: ORDERLY_ASSET_MANAGER,
+    functionCalls: [await user_deposit_native_token(parseNearAmount(amount))],
+  });
+
+  return signAndSendTransactions(transactions);
+};
+
+const depositFT = async (token: string, amount: string) => {
+  const transactions: Transaction[] = [];
+
+  const metaData = await getFTmetadata(token);
+
+  console.log({ metaData });
+
+  transactions.push({
+    receiverId: token,
+    functionCalls: [
+      await deposit_exact_token(
+        toNonDivisibleNumber(metaData.decimals, amount)
+      ),
+    ],
+  });
+
+  return signAndSendTransactions(transactions);
+};
+
+export {
+  signAndSendTransactions,
+  registerOrderly,
+  announceKey,
+  storageDeposit,
+  depositNEAR,
+  depositFT,
+};

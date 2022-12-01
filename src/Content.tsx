@@ -5,10 +5,7 @@ import { AccountView, AccessKeyView } from 'near-api-js/lib/providers/provider';
 import getConfig from './config';
 import { useEffect } from 'react';
 import { near, keyStore } from './near';
-import {
-  STORAGE_TO_REGISTER_WITH_MFT,
-  getOrderlySignature,
-} from './orderly/utils';
+import { STORAGE_TO_REGISTER_WITH_MFT, generateMessage } from './orderly/utils';
 import {
   get_listed_tokens,
   get_user_trading_key,
@@ -21,9 +18,15 @@ import {
   formatNearAmount,
   parseNearAmount,
 } from 'near-api-js/lib/utils/format';
-import { announceKey, deposit, registerOrderly } from './orderly/api';
+import {
+  announceKey,
+  storageDeposit,
+  registerOrderly,
+  depositNEAR,
+  depositFT,
+} from './orderly/api';
 import { find_orderly_functionCall_key, getPublicKey } from './orderly/utils';
-import { queryOrderly } from './orderly/off-chain-api';
+import { getOrderlyPublic, requestOrderly } from './orderly/off-chain-api';
 export type Account = AccountView & {
   account_id: string;
 };
@@ -35,12 +38,12 @@ export default function Content() {
     if (!accountId) return null;
     const nearConnection = await near.account(accountId);
 
-    queryOrderly({
+    requestOrderly({
       url: '/v1/client/info',
       accountId,
     });
 
-    queryOrderly({
+    requestOrderly({
       url: '/v1/client/holding?all=false',
       accountId,
     });
@@ -119,12 +122,66 @@ export default function Content() {
 
       <button
         onClick={async () => {
-          await deposit(accountId);
+          await storageDeposit(accountId);
         }}
         type="button"
         className="ml-2"
       >
-        deposit 0.05N
+        storage deposit 0.05N
+      </button>
+
+      <button
+        onClick={async () => {
+          const symbols = await getOrderlyPublic('/v1/public/info');
+
+          console.log({
+            symbols,
+          });
+        }}
+        type="button"
+        className="ml-2"
+      >
+        show all symbols
+      </button>
+      <button
+        onClick={async () => {
+          const list = await get_listed_tokens();
+          console.log({ list });
+        }}
+        type="button"
+        className="ml-2"
+      >
+        show whitelist tokens
+      </button>
+
+      <button
+        onClick={async () => {
+          await depositNEAR('10');
+        }}
+        type="button"
+        className="ml-2"
+      >
+        deposit 10 NEAR to orderly
+      </button>
+
+      <button
+        onClick={async () => {
+          await depositFT('wrap.testnet', '10');
+        }}
+        type="button"
+        className="ml-2"
+      >
+        deposit 10 wNEAR to orderly
+      </button>
+
+      <button
+        onClick={async () => {
+          await depositFT('usdc.orderly.testnet', '10');
+        }}
+        type="button"
+        className="ml-2"
+      >
+        deposit 10 usdc.orderly to orderly
       </button>
     </div>
   );

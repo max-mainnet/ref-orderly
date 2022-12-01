@@ -164,12 +164,13 @@ const user_deposit_native_token = async (amount: string) => {
   };
 };
 
-const deposit_exact_token = async (token: string, amount: string) => {
+const deposit_exact_token = async (amount: string) => {
   return {
     methodName: 'ft_transfer_call ',
     args: {
-      receiver_id: token,
+      receiver_id: ORDERLY_ASSET_MANAGER,
       amount,
+      msg: '',
     },
     gas: '30000000000000',
   };
