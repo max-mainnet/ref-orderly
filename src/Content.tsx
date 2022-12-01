@@ -23,6 +23,7 @@ import {
 } from 'near-api-js/lib/utils/format';
 import { announceKey, registerOrderly } from './orderly/api';
 import { find_orderly_functionCall_key } from './orderly/utils';
+import { queryOrderly } from './orderly/off-chain-api';
 export type Account = AccountView & {
   account_id: string;
 };
@@ -30,23 +31,9 @@ export type Account = AccountView & {
 export default function Content() {
   const { modal, accountId, selector } = useWalletSelector();
 
-  const getAccessKey = useCallback(async () => {
+  const test = useCallback(async () => {
     if (!accountId) return null;
     const nearConnection = await near.account(accountId);
-
-    const key = await find_orderly_functionCall_key(accountId);
-
-    console.log({
-      allkeys: await nearConnection.getAccessKeys(),
-    });
-
-    console.log({ key });
-
-    getOrderlySignature(accountId).then((res) => {
-      console.log({
-        signa: res,
-      });
-    });
 
     get_user_trading_key(accountId).then((res) => {
       console.log({ res });
@@ -59,9 +46,10 @@ export default function Content() {
 
     // });
 
-    const keyPub = await keyStore.getKey('testnet', accountId);
-
-    console.log({ keyPub: keyPub.getPublicKey().toString() });
+    queryOrderly({
+      url: '/v1/client/info',
+      accountId,
+    });
 
     return storage_balance_of(accountId);
 
@@ -82,14 +70,8 @@ export default function Content() {
   }, []);
 
   useEffect(() => {
-    getAccessKey().then((res) => {
+    test().then((res) => {
       console.log(res);
-    });
-
-    get_listed_tokens().then((res) => {
-      console.log({
-        token_list: res,
-      });
     });
   }, [accountId]);
 
@@ -130,6 +112,17 @@ export default function Content() {
         className="ml-2"
       >
         register orderly
+      </button>
+
+      <button
+        onClick={async () => {
+          const tradingKey = await get_user_trading_key(accountId);
+          alert(tradingKey);
+        }}
+        type="button"
+        className="ml-2"
+      >
+        show trading key
       </button>
     </div>
   );

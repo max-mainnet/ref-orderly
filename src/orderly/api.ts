@@ -96,7 +96,7 @@ const registerOrderly = async (accountId: string) => {
   //   false
   // );
 
-  // await account.functionCall(ORDERLY_ASSET_MANAGER, 'user_announce_key', {});
+  await account.functionCall(ORDERLY_ASSET_MANAGER, 'user_announce_key', {});
 
   await account.functionCall(
     ORDERLY_ASSET_MANAGER,
