@@ -6,7 +6,6 @@ export interface orderlyOrder {
   order_quantity?: number;
   order_amount?: number;
   side: 'BUY' | 'SELL';
-  signature: string;
   broker_id?: string;
   visible_quantity?: number;
 }

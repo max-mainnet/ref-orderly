@@ -129,7 +129,7 @@ const depositNEAR = async (amount: string) => {
 
   transactions.push({
     receiverId: ORDERLY_ASSET_MANAGER,
-    functionCalls: [await user_deposit_native_token(parseNearAmount(amount))],
+    functionCalls: [await user_deposit_native_token(amount)],
   });
 
   return signAndSendTransactions(transactions);
@@ -139,8 +139,6 @@ const depositFT = async (token: string, amount: string) => {
   const transactions: Transaction[] = [];
 
   const metaData = await getFTmetadata(token);
-
-  console.log({ metaData });
 
   transactions.push({
     receiverId: token,

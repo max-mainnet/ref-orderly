@@ -1,1 +1,1 @@
-const NotSignInError = new Error('Please sign in first. ');
+export const NotSignInError = new Error('Please sign in first. ');

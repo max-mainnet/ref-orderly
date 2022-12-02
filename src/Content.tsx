@@ -5,7 +5,12 @@ import { AccountView, AccessKeyView } from 'near-api-js/lib/providers/provider';
 import getConfig from './config';
 import { useEffect } from 'react';
 import { near, keyStore } from './near';
-import { STORAGE_TO_REGISTER_WITH_MFT, generateMessage } from './orderly/utils';
+import {
+  STORAGE_TO_REGISTER_WITH_MFT,
+  generateMessage,
+  generateOrderSignature,
+  generateTradingKeyPair,
+} from './orderly/utils';
 import {
   get_listed_tokens,
   get_user_trading_key,
@@ -26,7 +31,11 @@ import {
   depositFT,
 } from './orderly/api';
 import { find_orderly_functionCall_key, getPublicKey } from './orderly/utils';
-import { getOrderlyPublic, requestOrderly } from './orderly/off-chain-api';
+import {
+  getOrderlyPublic,
+  requestOrderly,
+  createOrder,
+} from './orderly/off-chain-api';
 export type Account = AccountView & {
   account_id: string;
 };
@@ -47,6 +56,18 @@ export default function Content() {
       url: '/v1/client/holding?all=false',
       accountId,
     });
+
+    // const trading_key = await get_user_trading_key(accountId);
+
+    // console.log({
+    //   trading_key,
+    // });
+
+    // generateOrderSignature(accountId);
+
+    // console.log({
+    //   keypair: generateTradingKeyPair(),
+    // });
 
     // return find_orderly_functionCall_key(accountId);
 
@@ -166,22 +187,28 @@ export default function Content() {
 
       <button
         onClick={async () => {
-          await depositFT('wrap.testnet', '10');
-        }}
-        type="button"
-        className="ml-2"
-      >
-        deposit 10 wNEAR to orderly
-      </button>
-
-      <button
-        onClick={async () => {
           await depositFT('usdc.orderly.testnet', '10');
         }}
         type="button"
         className="ml-2"
       >
         deposit 10 usdc.orderly to orderly
+      </button>
+
+      <button
+        onClick={async () => {
+          await createOrder({
+            symbol: 'SPOT_NEAR_USDC',
+            side: 'BUY',
+            order_type: 'LIMIT',
+            order_price: 15.23,
+            order_quantity: 23.11,
+            accountId,
+          });
+        }}
+      >
+        create order SPOT_NEAR_USDC LIMIT price 15.23 order_quantity 23.11 side
+        BUY{' '}
       </button>
     </div>
   );

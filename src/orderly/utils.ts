@@ -6,14 +6,35 @@ import { base_decode, base_encode } from 'near-api-js/lib/utils/serialize';
 import keccak256 from 'keccak256';
 import { Buffer } from 'buffer';
 import { KeyPair } from 'near-api-js';
+import { NotSignInError } from './error';
+
+export const get_orderly_private_key_path = (accountId: string) =>
+  `orderly-trading-key-private:${accountId}${getConfig().networkId}`;
+
+export const get_orderly_public_key_path = (accountId: string) =>
+  `orderly-trading-key-public:${accountId}${getConfig().networkId}`;
 
 export const STORAGE_TO_REGISTER_WITH_MFT = '0.1';
 
 export type OFF_CHAIN_METHOD = 'POST' | 'GET' | 'DELETE';
 
-const generateTradingKeyPair = () => {
+export const generateTradingKeyPair = () => {
   const EC = new ec('secp256k1');
   const keyPair = EC.genKeyPair();
+
+  const accountId = window.selector.store.getState().accounts?.[0]?.accountId;
+
+  if (!accountId) throw NotSignInError;
+
+  localStorage.setItem(
+    get_orderly_private_key_path(accountId),
+    keyPair.getPrivate().toString('hex')
+  );
+
+  localStorage.setItem(
+    get_orderly_public_key_path(accountId),
+    keyPair.getPublic().encode('hex', false).replace('04', '')
+  );
 
   return {
     privateKey: keyPair.getPrivate().toString('hex'),
@@ -91,7 +112,7 @@ export const generateMessage = (
 //     'fc3c41d988dd03a65a99354a7b1d311a43de6b7a7867bdbdaf228bb74a121f8e47bb15ff7f69eb19c96da222f651da53b5ab30fb7caf69a76f01ad9af06c154400',
 // })}`;
 
-export const generateOrderlySignatureHeader = async ({
+export const generateRequestSignatureHeader = async ({
   accountId,
   time_stamp,
   url,
@@ -122,7 +143,27 @@ export const generateOrderlySignatureHeader = async ({
     .replace(/\//g, '_');
 };
 
-export const generateOrderSignature = async ({}: {}) => {};
+export const generateOrderSignature = (accountId: string, message: string) => {
+  const msgHash = new Buffer(keccak256(message)).toString('hex');
+
+  const priKey = localStorage.getItem(get_orderly_private_key_path(accountId));
+
+  const EC = new ec('secp256k1');
+
+  const keyPair = EC.keyFromPrivate(priKey, 'hex');
+
+  // console.log(pubKey, keyPair.getPublic().encode('hex', false));
+
+  const signature = keyPair.sign(msgHash, 'hex', { canonical: true });
+
+  const finalSignature =
+    signature.r.toString('hex') +
+    signature.s.toString('hex') +
+    '0' +
+    signature.recoveryParam;
+
+  return finalSignature;
+};
 
 export const toReadableNumber = (
   decimals: number,

@@ -158,10 +158,9 @@ const get_storage_deposit_amount = async (accountId: string) => {
 const user_deposit_native_token = async (amount: string) => {
   return {
     methodName: 'user_deposit_native_token',
-    args: {
-      amount,
-    },
+    args: {},
     gas: '30000000000000',
+    amount,
   };
 };
 
