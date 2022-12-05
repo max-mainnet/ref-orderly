@@ -1558,11 +1558,6 @@ js-sha256@^0.9.0:
   resolved "https://registry.npmmirror.com/js-sha256/-/js-sha256-0.9.0.tgz"
   integrity sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==
 
-js-sha3@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.npmmirror.com/js-sha3/-/js-sha3-0.8.0.tgz#b9b7a5da73afad7dedd0f8c463954cbde6818840"
-  integrity sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==
-
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
@@ -2084,6 +2079,11 @@ react-refresh@^0.9.0:
   version "0.9.0"
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.9.0.tgz"
   integrity sha512-Gvzk7OZpiqKSkxsQvO/mbTN1poglhmAV7gR/DdIrRrSMXraRQQlfikRJOr3Nb9GTMPC5kof948Zy6jJZIFtDvQ==
+
+react-tradingview-embed@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.npmmirror.com/react-tradingview-embed/-/react-tradingview-embed-3.0.6.tgz#880c0a9de55b3f3a8ba9738dee96c4cfc89eef3d"
+  integrity sha512-1qClGqBHOi7mvRFvhBxXSoyoPrNR8aPi/yfF/mYt8EWStA8LoWBl9ufemCyG+mc61iPmNGjJla0XB00FPENaPg==
 
 react@18.2.0:
   version "18.2.0"

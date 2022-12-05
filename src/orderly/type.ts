@@ -1,4 +1,4 @@
-export interface orderlyOrder {
+export interface OrderlyOrder {
   symbol: string;
   client_order_id?: string;
   order_type: 'LIMIT' | 'MARKET' | 'IOC' | 'FOK' | 'POST_ONLY' | 'ASK' | 'BID';
@@ -8,4 +8,8 @@ export interface orderlyOrder {
   side: 'BUY' | 'SELL';
   broker_id?: string;
   visible_quantity?: number;
+}
+
+export interface EditOrderlyOrder extends OrderlyOrder {
+  order_id: number;
 }

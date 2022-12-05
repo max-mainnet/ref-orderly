@@ -16,7 +16,7 @@ export const get_orderly_public_key_path = (accountId: string) =>
 
 export const STORAGE_TO_REGISTER_WITH_MFT = '0.1';
 
-export type OFF_CHAIN_METHOD = 'POST' | 'GET' | 'DELETE';
+export type OFF_CHAIN_METHOD = 'POST' | 'GET' | 'DELETE' | 'PUT';
 
 export const generateTradingKeyPair = () => {
   const EC = new ec('secp256k1');
@@ -163,6 +163,23 @@ export const generateOrderSignature = (accountId: string, message: string) => {
     signature.recoveryParam;
 
   return finalSignature;
+};
+
+export const formateParams = (props: object) => {
+  const message = Object.entries(props)
+    .filter(([k, v], i) => {
+      return v !== undefined && v !== null;
+    })
+    .map(([k, v], i) => {
+      if (typeof v === 'number') {
+        return `${k}=${parseFloat(v.toString())}`;
+      }
+      return `${k}=${v}`;
+    })
+    .sort()
+    .join('&');
+
+  return message;
 };
 
 export const toReadableNumber = (
