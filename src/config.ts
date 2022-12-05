@@ -649,22 +649,26 @@ export function getOrderlyConfig(env: string = process.env.NEAR_ENV) {
       return {
         ORDERLY_ASSET_MANAGER: 'asset-manager.orderly-network.near',
         OFF_CHAIN_END_POINT: 'https://api.orderly.org',
+        ORDERLY_WS_ENDPOINT: 'wss://ws.orderly.org/ws/stream',
       };
     case 'development':
     case 'pub-testnet':
       return {
         ORDERLY_ASSET_MANAGER: 'asset-manager.orderly.testnet',
         OFF_CHAIN_END_POINT: 'https://testnet-api.orderly.org',
+        ORDERLY_WS_ENDPOINT: 'wss://testnet-ws.orderly.org/ws/stream',
       };
     case 'testnet':
       return {
         ORDERLY_ASSET_MANAGER: 'asset-manager.orderly.testnet',
         OFF_CHAIN_END_POINT: 'https://testnet-api.orderly.org',
+        ORDERLY_WS_ENDPOINT: 'wss://testnet-ws.orderly.org/ws/stream',
       };
     default:
       return {
         ORDERLY_ASSET_MANAGER: 'asset-manager.orderly-network.near',
         OFF_CHAIN_END_POINT: 'https://api.orderly.org',
+        ORDERLY_WS_ENDPOINT: 'wss://ws.orderly.org/ws/stream',
       };
   }
 }

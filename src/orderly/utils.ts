@@ -98,8 +98,8 @@ export const generateMessage = (
   body: object
 ) => {
   return !!body
-    ? `${time_stamp}${method}${url}${JSON.stringify(body)}`
-    : `${time_stamp}${method}${url}`;
+    ? `${time_stamp}${method || ''}${url}${JSON.stringify(body)}`
+    : `${time_stamp}${method || ''}${url}`;
 };
 
 // const message = `1649920583000POST/v1/order${JSON.stringify({
@@ -123,7 +123,7 @@ export const generateRequestSignatureHeader = async ({
   time_stamp: number;
   url: string;
   body: object;
-  method: OFF_CHAIN_METHOD;
+  method?: OFF_CHAIN_METHOD;
 }) => {
   const message = generateMessage(time_stamp, method, url, body);
 
