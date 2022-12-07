@@ -14,8 +14,9 @@ export interface EditOrderlyOrder extends OrderlyOrder {
   order_id: number;
 }
 
-export interface OrderWSConnection extends Record<string, string> {
+export interface OrderWSConnection extends Record<string, any> {
   id?: string;
   event: 'ping' | 'auth' | 'request' | 'subscribe' | 'unsubscribe';
   topic?: string;
+  params?: any;
 }

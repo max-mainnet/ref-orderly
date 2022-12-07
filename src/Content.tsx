@@ -40,12 +40,9 @@ import {
 
 import { AdvancedChart } from 'react-tradingview-embed';
 import { batchCreateOrder } from './orderly/off-chain-api';
-import { useOrderlyOrderbook } from './orderly/off-chain-ws';
-import {
-  useOrderlyWS,
-  useOrderlyPingPong,
-  useOrderlyAuth,
-} from './orderly/off-chain-ws';
+import { useOrderlyPrivateData } from './orderly/off-chain-ws';
+import { useOrderlyMarketData } from './orderly/off-chain-ws';
+import { useOrderlyWS, useOrderlyPingPong } from './orderly/off-chain-ws';
 import {
   cancelOrders,
   cancelOrderByClientId,
@@ -70,7 +67,13 @@ export type Account = AccountView & {
 export default function Content() {
   const { modal, accountId, selector } = useWalletSelector();
 
-  const pingPong = useOrderlyPingPong();
+  // const pingPongprivate = useOrderlyPrivatePingPong();
+
+  // const marketData = useOrderlyMarketData({
+  //   symbol: 'SPOT_NEAR_USDC',
+  // });
+
+  const auth = useOrderlyPrivateData();
 
   // const auth = useOrderlyAuth();
 

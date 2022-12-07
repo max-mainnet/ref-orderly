@@ -98,19 +98,9 @@ export const generateMessage = (
   body: object
 ) => {
   return !!body
-    ? `${time_stamp}${method || ''}${url}${JSON.stringify(body)}`
-    : `${time_stamp}${method || ''}${url}`;
+    ? `${time_stamp}${method || ''}${url || ''}${JSON.stringify(body)}`
+    : `${time_stamp}${method || ''}${url || ''}`;
 };
-
-// const message = `1649920583000POST/v1/order${JSON.stringify({
-//   symbol: 'SPOT_NEAR_USDC',
-//   order_type: 'LIMIT',
-//   order_price: 15.23,
-//   order_quantity: 23.11,
-//   side: 'BUY',
-//   signature:
-//     'fc3c41d988dd03a65a99354a7b1d311a43de6b7a7867bdbdaf228bb74a121f8e47bb15ff7f69eb19c96da222f651da53b5ab30fb7caf69a76f01ad9af06c154400',
-// })}`;
 
 export const generateRequestSignatureHeader = async ({
   accountId,
@@ -126,6 +116,10 @@ export const generateRequestSignatureHeader = async ({
   method?: OFF_CHAIN_METHOD;
 }) => {
   const message = generateMessage(time_stamp, method, url, body);
+
+  console.log({
+    message,
+  });
 
   const keyPair = await keyStore.getKey(getConfig().networkId, accountId);
 
